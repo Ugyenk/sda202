@@ -78,8 +78,3 @@ of the syllabus content.
 **D. Final Project: (40%)** Students will design and document a comprehensive software architecture for a complex system, incorporating all major concepts learned in the module. Students will undertake a final project as a group. The students will start selecting their project topic in the 7th week which they will have to cover all concepts learnt as they progress through the semester in the lectures and practical sessions. The project presentation will be done in the 14th and 15th weeks.
 
 Pre-requisites: None
-
-<!-- {{ youtube_embed("https://www.youtube.com/watch?v=dQw4w9WgXcQ", title="Never Gonna Give You Up") }}
-{{ youtube_embed("dQw4w9WgXcQ", title="Wider Video", width="90%") }}
-{{ youtube_embed("https://www.youtube.com/watch?v=dQw4w9WgXcQ", align="left", width="100%", title="Left aligned") }}
-{{ youtube_embed("https://www.youtube.com/watch?v=IZbN_nmxAGk&list=RDIZbN_nmxAGk&start_radio=1", width="700px", title="Fixed width example") }} -->
