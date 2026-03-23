@@ -1,0 +1,125 @@
+# System Design Notes: URL Shortener
+
+A URL shortener is a service that takes an URL and returns a short alias. The service then redirects visitors to the URL. The URL shortener design from System Design Interview is a starting point. It covers the core design decisions. What works well. However it leaves some things undone.
+
+## Problem Statement
+
+The URL shortener service needs to handle 100 million URLs per day. It should use characters and produce the shortest possible URLs. The service must be highly available. The scope of the project is simplified, which is fair for a chapter-length treatment. There are no deletions and no updates.
+
+## Back of Envelope Estimation
+
+To estimate the requirements of the URL shortener we need to calculate the number of write and read operations per second. We also need to calculate the number of records and storage needed for 10 years. The results are as follows:
+
+| Metric | Result |
+
+|---|---|
+
+| Write ops/second | 1,160 |
+
+| Read ops/second | 11,600 (10:1 ratio)
+
+| Total records (10 yrs) | 365 billion |
+
+| Storage (10 yrs) | 365 TB |
+
+The storage requirement of 365 TB is a significant challenge. Everything after this including caching, sharding and distributed ID generation is a response to this figure.
+
+## High-Level Design
+
+The API surface for the URL shortener is simple. It has two endpoints: one for shortening URLs and one for redirecting to the URL.
+
+**API surface:**
+
+```
+
+POST /api/v1/data/shorten   → returns shortURL
+
+GET  /api/v1/{shortUrl}     → redirects to longURL
+
+```
+
+The choice between 301 and 302 redirects is a product decision. It depends on whether we want to optimize for infrastructure or insight.
+
+| 301 Permanent | 302 Temporary |
+
+|---|---|---|
+
+| Browser caches? | Yes | No |
+
+| Click tracking? | No | Yes |
+
+Server load | Lower | Higher |
+
+## Deep Dive Design
+
+### Data Model
+
+The data model for the URL shortener is a table with three columns: id, shortURL and longURL. The index on shortURL is critical for redirects.
+
+### Hash Function Approaches
+
+There are two approaches to generating URLs: hash + collision resolution and base 62 conversion. The base 62 conversion approach is elegant. Ensures uniqueness.
+
+**Approach 1. Hash + Collision Resolution:** Hash the long URL take the 7 characters check for collisions. A bloom filter reduces the cost of those checks.
+
+**Approach 2. Base 62 Conversion:** Assign an unique auto-incrementing ID convert to base 62.
+
+| Hash + Collision | Base 62 |
+
+|---|---|---|
+
+| Fixed URL length? | Yes | No |
+
+| Collision possible? | Yes | No |
+
+| ID generator needed? | No | Yes |
+
+| URLs predictable? | No | Yes (risk)
+
+### URL Shortening Flow (Base 62)
+
+The URL shortening flow for the base 62 approach is as follows:
+
+```
+
+1. Check if longURL already exists → return existing shortURL if so
+
+2. Generate ID via distributed ID generator
+
+3. Convert ID to base 62 → shortURL
+
+4. Persist {id shortURL, longURL} to DB
+
+5. Return shortURL
+
+```
+
+### URL Flow
+
+The URL redirecting flow uses a cache layer to improve performance. Popular URLs are served from memory. Misses fall through to the DB.
+
+## Review
+
+### What Held Up
+
+The 301/302 discussion is useful and reframes what looks like a minor HTTP detail into a meaningful product decision. The base 62 conversion approach is elegant. Ensures uniqueness. The comparison table is honest. Makes the tradeoffs visible.
+
+### Where the Chapter Falls Short
+
+The unique ID generator's deferred not designed. The cache is. Never specified. The enumeration risk from IDs is flagged but unresolved. A write race condition goes unaddressed.
+
+### Topics Worth Further Study
+
+- **Bloom filters**. Membership checks
+
+- **Distributed ID generation**. Snowflake architecture, database sequences, UUID limitations
+
+- **Database sharding**. Partitioning strategy for 365 billion records
+
+- **Cache sizing**. Estimating coverage needs under power law access distribution
+
+- **Analytics pipeline**. Decoupling click tracking from the redirect path, without adding latency
+
+## Summary
+
+The URL shortener design is a good starting point. However it leaves some things undone. The distributed ID generator, sharding strategy, cache design and security concerns are all engineering challenges that get deferred or mentioned in passing. These topics are worth study to create a production-ready system.
