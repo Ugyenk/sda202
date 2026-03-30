@@ -1,4 +1,4 @@
-# Practical 2: Business-to-System Interaction Modeling
+# Practical 2: UseCase
 
 ## Objective
 To demonstrate a structured approach to business and systems analysis by progressing from:
@@ -34,7 +34,7 @@ From the business workflow, I extracted what the e-commerce platform actually ne
 ### 3. IoD – System Supported
 This refined Interaction Overview Diagram merges the business workflow from Step 1 with the functional components from Step 2. The system now appears as an active participant (swimlane) facilitating the interactions between actors to achieve the business outcome.
 
-This was the final step where I combined everything. The system is no longer a black box – it actively processes orders, communicates with the payment gateway, updates inventory, and sends notifications to both the customer and merchant.
+This was the final step where I combined everything. The system is no longer a black box, it actively processes orders, communicates with the payment gateway, updates inventory, and sends notifications to both the customer and merchant.
 
 ![IoD - System Supported](./ioD-System-Suported.png)
 
@@ -54,15 +54,15 @@ Completing this practical gave me a clearer understanding of how business analys
 
 **What worked well:**
 - Starting with the actor-to-actor perspective forced me to think about the business problem before jumping into system features
-- The UCD acted as a natural bridge – it was easy to derive once the business interactions were mapped
+- The UCD acted as a natural bridge, it was easy to derive once the business interactions were mapped
 - Creating the final system-supported IoD felt intuitive because I had both the business flow and functional requirements ready
 
 **Challenges faced:**
-- Deciding what level of detail to include in the first IoD – I initially included too much system detail before realizing it belongs in Step 3
-- Ensuring the UCD only captured system functions and not business processes – this took some revision
+- Deciding what level of detail to include in the first IoD. I initially included too much system detail before realizing it belongs in Step 3
+- Ensuring the UCD only captured system functions and not business processes, this took some revision
 
 **Key takeaway:**
-This three-step approach ensures the software is built to enable real-world interactions, not just technical features. It also makes documentation traceable – anyone can follow from business need to system implementation.
+This three-step approach ensures the software is built to enable real-world interactions, not just technical features. It also makes documentation traceable, anyone can follow from business need to system implementation.
 
 
 ## Tools Used
